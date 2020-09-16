@@ -28,8 +28,17 @@
 
   <style>
     body {
-      color: #666;
+      color: #999;
       text-align: center;
+    }
+
+    input {
+      text-align: center;
+    }
+
+    section {
+      font-size: 2rem;
+      color: #666;
     }
 
     p {
@@ -43,6 +52,8 @@
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <main class="container">
         <h1>How Old?</h1>
+        <input type="text" id="date-input" value="2020-07-10" placeholder="YYYY-MM-DD"/>
+
         <section class=""><span id="days"></span> days</section>
         or
         <section class=""><span id="weeks"></span> weeks</section>
@@ -50,36 +61,53 @@
         <section class=""><span id="months"></span> months</section>
         or
         <section class=""><span id="years"></span> years</section>
+
+
   </main>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.28.0/moment.min.js" type="text/javascript"></script>
   <script>
-    // var dateNow = new Date(); //"now"
-    // var dateThen = new Date("1020-7-10")  // some date
-    // var diff = Math.abs(dateNow-dateThen); 
+    var input = document.getElementById('date-input');
+    input.onchange = updateValues;
 
-    
-    
-    var timeNow = moment();
-    var timeThen = moment([2020, 06, 10]);
+    updateValues();
 
-    var daysDiff = timeNow.diff(timeThen, 'days', true) // 1 days = (int) ((milliseconds / (1000*60*60*24)) % 7);
-    daysDiff = daysDiff.toFixed(2);
-    setNodeValue('days', daysDiff);
 
-    var weeksDiff = timeNow.diff(timeThen, 'weeks', true) // 1 days = (int) ((milliseconds / (1000*60*60*24)) % 7);
-    weeksDiff = weeksDiff.toFixed(2);
-    setNodeValue('weeks', weeksDiff);
+    function updateValues() {
+      var inputValue = input.value;
 
-    var monthsDiff = timeNow.diff(timeThen, 'months', true) // 1 days = (int) ((milliseconds / (1000*60*60*24)) % 7);
-    monthsDiff = monthsDiff.toFixed(2);
-    setNodeValue('months', monthsDiff);
+      if(!inputValue) {
+        clearDisplays();
+        return;
+      }
 
-    var yearsDiff = timeNow.diff(timeThen, 'years', true) // 1 days = (int) ((milliseconds / (1000*60*60*24)) % 7);
-    yearsDiff = yearsDiff.toFixed(2);
-    setNodeValue('years', yearsDiff);
+      var timeNow = moment();
+      var timeThen = moment(inputValue);
 
-    
+      if(!timeThen.isValid()) {
+        alert('Please enter dates in the format: YYYY-MM-DD');
+        clearDisplays();
+        return;
+      }
 
+      setNodeText(timeNow, timeThen, 'days')
+      setNodeText(timeNow, timeThen, 'weeks')
+      setNodeText(timeNow, timeThen, 'months')
+      setNodeText(timeNow, timeThen, 'years')
+
+    }
+
+    function clearDisplays() {
+      setNodeValue('days', '--')
+      setNodeValue('weeks', '--')
+      setNodeValue('months', '--')
+      setNodeValue('years', '--')
+    }
+
+    function setNodeText(timeNow, timeThen, diffType) {
+      var diff = timeNow.diff(timeThen, diffType, true) // 1 days = (int) ((milliseconds / (1000*60*60*24)) % 7);
+      diff = diff.toFixed(2);
+      setNodeValue(diffType, diff);
+    }
 
     function setNodeValue(nodeId, newValue) {
       var element = document.getElementById(nodeId);
