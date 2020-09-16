@@ -69,6 +69,13 @@
     var input = document.getElementById('date-input');
     input.onchange = updateValues;
 
+    var storedDate = localStorage.getItem('date');
+    if(storedDate) {
+      input.value = storedDate;
+    }
+
+
+
     updateValues();
 
 
@@ -88,6 +95,8 @@
         clearDisplays();
         return;
       }
+
+      localStorage.setItem('date', inputValue);
 
       setNodeText(timeNow, timeThen, 'days')
       setNodeText(timeNow, timeThen, 'weeks')
